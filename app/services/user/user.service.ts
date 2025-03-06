@@ -1,8 +1,8 @@
 'use client';
 
-import api from './api';
-import { userMockService } from './mocks';
-import { mockConfig } from './mocks/mockConfig';
+import api from '../api';
+import { userMockService } from '../mocks';
+import { mockConfig } from '../mocks/mockConfig';
 import { 
   UserProfile, 
   UserActivity, 
@@ -10,7 +10,12 @@ import {
   SuccessResponse, 
   UserNotificationSettings, 
   UserPrivacySettings 
-} from '../types';
+} from '@/app/types';
+import { 
+  GetUserActivityParams, 
+  ChangePasswordData, 
+  AvatarResponse 
+} from './user.types';
 
 /**
  * Сервис для работы с пользователями
@@ -43,7 +48,7 @@ const userService = {
   /**
    * Изменение пароля пользователя
    */
-  async changePassword(data: { current_password: string; new_password: string }): Promise<SuccessResponse> {
+  async changePassword(data: ChangePasswordData): Promise<SuccessResponse> {
     if (mockConfig.useMockData) {
       return userMockService.changePassword(data);
     }
@@ -55,7 +60,7 @@ const userService = {
   /**
    * Получение истории активности пользователя
    */
-  async getUserActivity(params?: { page?: number; page_size?: number }): Promise<PaginatedResponse<UserActivity>> {
+  async getUserActivity(params?: GetUserActivityParams): Promise<PaginatedResponse<UserActivity>> {
     if (mockConfig.useMockData) {
       return userMockService.getUserActivity(params);
     }
@@ -91,12 +96,12 @@ const userService = {
   /**
    * Загрузка аватара пользователя
    */
-  async uploadAvatar(formData: FormData): Promise<{ avatar_url: string }> {
+  async uploadAvatar(formData: FormData): Promise<AvatarResponse> {
     if (mockConfig.useMockData) {
       return userMockService.uploadAvatar(formData);
     }
     
-    const response = await api.post<{ avatar_url: string }>('/user/avatar/', formData, {
+    const response = await api.post<AvatarResponse>('/user/avatar/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

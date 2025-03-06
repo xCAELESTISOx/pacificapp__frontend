@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import authService from '@/services/authService';
+import { authService } from '@/services';
 import Input from '../ui/Input';
 
 const RegisterForm: React.FC = () => {

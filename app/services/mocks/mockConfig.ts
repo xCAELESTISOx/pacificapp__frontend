@@ -3,7 +3,7 @@
 // Настройки для переключения между мок-данными и реальным API
 export const mockConfig = {
   // Глобальный флаг для включения/выключения мок-данных
-  useMockData: process.env.NODE_ENV === 'development' && true,
+  useMockData: false,
   
   // Задержка для имитации реальных запросов (в мс)
   delay: {

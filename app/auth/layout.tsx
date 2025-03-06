@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import authService from '@/services/authService';
+import { authService } from '@/services';
 
 export default function AuthLayout({
   children,

@@ -33,11 +33,3 @@ export interface WorkStatistics {
     productivity?: number;
   }>;
 }
-
-/**
- * Параметры запроса статистики рабочей активности
- */
-export interface WorkStatisticsParams {
-  start_date: string;
-  end_date: string;
-} 

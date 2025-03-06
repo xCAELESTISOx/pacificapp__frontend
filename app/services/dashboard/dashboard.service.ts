@@ -1,25 +1,14 @@
 'use client';
 
-import api from './api';
-import { mockConfig } from './mocks/mockConfig';
+import api from '../api';
+import { mockConfig } from '../mocks/mockConfig';
 import { 
   DashboardSummary,
   DashboardParams,
   ChartData,
-  StatisticsParams,
-  Trend
-} from '../types';
-
-/**
- * Интерфейс статистики риска выгорания
- */
-interface BurnoutRiskStats {
-  statistics: Array<{
-    date: string;
-    risk_level: number;
-  }>;
-  avg_risk: number;
-}
+  StatisticsParams
+} from '@/app/types';
+import { BurnoutRiskStats } from './dashboard.types';
 
 /**
  * Мок данные для разработки
@@ -41,6 +30,11 @@ const mockDashboardData: DashboardSummary = {
     average_productivity: 7.5,
     total_records: 10,
     trend: 'up'
+  },
+  burnout_risk: {
+    current: 68,
+    previous: 72,
+    trend: 'down'
   },
   recommendations: {
     pending: 2,
@@ -93,7 +87,7 @@ const dashboardService = {
       return mockDashboardData;
     }
     
-    const response = await api.get<DashboardSummary>('/dashboard/', { params });
+    const response = await api.get<DashboardSummary>('/dashboard/summary/', { params });
     return response.data;
   },
   
@@ -264,7 +258,7 @@ const dashboardService = {
     
     const response = await api.get<ChartData>('/work-activities/chart/', { params });
     return response.data;
-  }
+  },
 };
 
-export default dashboardService;
+export default dashboardService; 

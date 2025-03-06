@@ -1,26 +1,16 @@
 'use client';
 
-import api from './api';
-import { recommendationMockService } from './mocks';
-import { mockConfig } from './mocks/mockConfig';
+import api from '../api';
+import { recommendationMockService } from '../mocks';
+import { mockConfig } from '../mocks/mockConfig';
 import { 
   Recommendation, 
   UserRecommendation, 
   RecommendationParams,
   UserRecommendationParams,
-  RecommendationStatus,
   PaginatedResponse
-} from '../types';
-
-/**
- * Интерфейс для данных обновления статуса рекомендации
- * Исключает статус 'pending' из допустимых значений для update
- */
-interface UpdateRecommendationStatusData {
-  status: Extract<RecommendationStatus, 'accepted' | 'completed' | 'rejected'>;
-  user_feedback?: string;
-  user_rating?: number;
-}
+} from '@/app/types';
+import { UpdateRecommendationStatusData } from './recommendation.types';
 
 /**
  * Сервис для работы с рекомендациями

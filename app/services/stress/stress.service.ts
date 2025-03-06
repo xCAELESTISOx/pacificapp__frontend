@@ -1,14 +1,15 @@
 'use client';
 
-import api from './api';
-import { stressMockService } from './mocks';
-import { mockConfig } from './mocks/mockConfig';
+import api from '../api';
+import { stressMockService } from '../mocks';
+import { mockConfig } from '../mocks/mockConfig';
 import { 
   StressLevel, 
   StressStatistics, 
   StressStatisticsParams,
   PaginatedResponse 
-} from '../types';
+} from '@/app/types';
+import { GetStressLevelsParams } from './stress.types';
 
 /**
  * Сервис для работы с уровнем стресса
@@ -17,7 +18,7 @@ const stressService = {
   /**
    * Получение истории уровней стресса
    */
-  async getStressLevels(params?: { page?: number; page_size?: number }): Promise<PaginatedResponse<StressLevel>> {
+  async getStressLevels(params?: GetStressLevelsParams): Promise<PaginatedResponse<StressLevel>> {
     if (mockConfig.useMockData) {
       return stressMockService.getStressLevels(params);
     }

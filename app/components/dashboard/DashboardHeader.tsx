@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import authService from '@/services/authService';
+import { authService } from '@/services';
 
 const DashboardHeader: React.FC = () => {
   // Получаем информацию о текущем пользователе

@@ -1,14 +1,14 @@
 'use client';
 
-import api from './api';
-import { workMockService } from './mocks';
-import { mockConfig } from './mocks/mockConfig';
+import api from '../api';
+import { workMockService } from '../mocks';
+import { mockConfig } from '../mocks/mockConfig';
 import { 
   WorkActivity, 
   WorkStatistics, 
-  WorkStatisticsParams,
-  PaginatedResponse 
-} from '../types';
+} from '../../types';
+
+import { GetWorkActivitiesResponse, GetWorkActivitiesParams, GetWorkStatisticsParams } from './workActivity.types';
 
 /**
  * Сервис для работы с рабочей активностью
@@ -17,12 +17,12 @@ const workActivityService = {
   /**
    * Получение записей о рабочей активности
    */
-  async getWorkActivities(params?: { page?: number; page_size?: number }): Promise<PaginatedResponse<WorkActivity>> {
+  async getWorkActivities(params?: GetWorkActivitiesParams): Promise<GetWorkActivitiesResponse> {
     if (mockConfig.useMockData) {
       return workMockService.getWorkActivities(params);
     }
     
-    const response = await api.get<PaginatedResponse<WorkActivity>>('/work-activities/', { params });
+    const response = await api.get<GetWorkActivitiesResponse>('/work-activities/', { params });
     return response.data;
   },
   
@@ -65,7 +65,7 @@ const workActivityService = {
   /**
    * Получение статистики рабочей активности за период
    */
-  async getWorkStatistics(params: WorkStatisticsParams): Promise<WorkStatistics> {
+  async getWorkStatistics(params: GetWorkStatisticsParams): Promise<WorkStatistics> {
     if (mockConfig.useMockData) {
       return workMockService.getWorkStatistics(params);
     }

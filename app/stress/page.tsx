@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import MainLayout from '../components/layout/MainLayout';
 import StressChart from '../components/dashboard/StressChart';
+import { StressRangeInput } from '../components/ui';
 import { format, subDays } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { dashboardService, stressService } from '../services';
+import { StressStatistics } from '../types/Stress';
 
 // Интерфейс для статистики стресса
 interface StressStatItem {
@@ -53,21 +55,26 @@ const StressTracker: React.FC = () => {
     <div className="bg-white p-6 rounded-lg shadow-md mb-6">
       <h2 className="text-xl font-bold mb-4">Отслеживание стресса</h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Ваш текущий уровень стресса: {stressLevel}</label>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={stressLevel}
-            onChange={(e) => setStressLevel(parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>Спокойствие</span>
-            <span>Сильный стресс</span>
-          </div>
-        </div>
+        <StressRangeInput
+          value={stressLevel}
+          onChange={setStressLevel}
+          defaultValue={50}
+          // Используем стандартные настройки из компонента
+        />
+        
+        {/* Пример с кастомными настройками:
+        <StressRangeInput
+          value={stressLevel}
+          onChange={setStressLevel}
+          min={10}
+          max={90}
+          label="Уровень тревожности"
+          minLabel="Минимальный"
+          maxLabel="Максимальный"
+          className="my-6"
+          valueFormatter={(val) => `${val}%`}
+        /> 
+        */}
         
         <div className="mb-4">
           <label className="block text-gray-700 mb-2">Комментарий (необязательно)</label>
@@ -186,7 +193,7 @@ export default function StressPage() {
   const formattedEndDate = format(endDate, 'yyyy-MM-dd');
   
   // Загружаем данные о стрессе
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<StressStatistics>({
     queryKey: ['stressLevels', formattedStartDate, formattedEndDate],
     queryFn: () => stressService.getStressStatistics({ 
       start_date: formattedStartDate, 
@@ -215,14 +222,14 @@ export default function StressPage() {
           ) : (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <StressChart 
-                data={data.statistics.map((item: StressStatItem) => ({
+                data={(data?.daily_data || []).map((item) => ({
                   date: item.date,
-                  value: item.avg_level
+                  level: item.level
                 }))} 
               />
               <div className="mt-4 text-center">
-                <p className="text-gray-600">Средний уровень стресса: <span className="font-bold">{Math.round(data.avg_level)}</span></p>
-                <p className="text-gray-600">Всего записей: {data.total_records}</p>
+                <p className="text-gray-600">Средний уровень стресса: <span className="font-bold">{data && Math.round(data.average_level)}</span></p>
+                <p className="text-gray-600">Всего записей: {data?.total_records}</p>
               </div>
             </div>
           )}

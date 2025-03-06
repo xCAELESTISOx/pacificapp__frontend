@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import * as stylex from '@stylexjs/stylex';
+import clsx from 'clsx';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline' | 'text';
 type ButtonSize = 'small' | 'medium' | 'large';
@@ -15,85 +15,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: React.ReactNode;
 }
 
-const styles = stylex.create({
-  button: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '4px',
-    fontWeight: 500,
-    transition: 'all 0.2s ease',
-    cursor: 'pointer',
-    border: 'none',
-    outline: 'none',
-    gap: '8px',
-  },
-  fullWidth: {
-    width: '100%',
-  },
-  // Варианты кнопок
-  primary: {
-    backgroundColor: 'var(--primary-color)',
-    color: 'white',
-    ':hover': {
-      backgroundColor: '#2980b9',
-    },
-  },
-  secondary: {
-    backgroundColor: 'var(--secondary-color)',
-    color: 'white',
-    ':hover': {
-      backgroundColor: '#27ae60',
-    },
-  },
-  danger: {
-    backgroundColor: 'var(--danger-color)',
-    color: 'white',
-    ':hover': {
-      backgroundColor: '#c0392b',
-    },
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    color: 'var(--primary-color)',
-    border: '1px solid var(--primary-color)',
-    ':hover': {
-      backgroundColor: 'rgba(52, 152, 219, 0.1)',
-    },
-  },
-  text: {
-    backgroundColor: 'transparent',
-    color: 'var(--primary-color)',
-    ':hover': {
-      backgroundColor: 'rgba(52, 152, 219, 0.1)',
-    },
-  },
-  // Размеры кнопок
-  small: {
-    padding: '6px 12px',
-    fontSize: '0.875rem',
-  },
-  medium: {
-    padding: '8px 16px',
-    fontSize: '1rem',
-  },
-  large: {
-    padding: '12px 24px',
-    fontSize: '1.125rem',
-  },
-  // Состояние загрузки
-  loading: {
-    opacity: 0.7,
-    pointerEvents: 'none',
-  },
-  // Отключенное состояние
-  disabled: {
-    opacity: 0.5,
-    pointerEvents: 'none',
-    cursor: 'not-allowed',
-  },
-});
-
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
@@ -103,20 +24,40 @@ const Button: React.FC<ButtonProps> = ({
   leftIcon,
   rightIcon,
   disabled,
+  className,
   ...props
 }) => {
+  const baseClasses = 'inline-flex items-center justify-center rounded font-medium transition-all duration-200 focus:outline-none gap-2';
+  
+  const variantClasses = {
+    primary: 'bg-[#3498db] hover:bg-[#2980b9] text-white',
+    secondary: 'bg-[#2ecc71] hover:bg-[#27ae60] text-white',
+    danger: 'bg-[#e74c3c] hover:bg-[#c0392b] text-white',
+    outline: 'bg-transparent border border-[#3498db] text-[#3498db] hover:bg-[rgba(52,152,219,0.1)]',
+    text: 'bg-transparent text-[#3498db] hover:bg-[rgba(52,152,219,0.1)]'
+  };
+  
+  const sizeClasses = {
+    small: 'py-1.5 px-3 text-sm',
+    medium: 'py-2 px-4 text-base',
+    large: 'py-3 px-6 text-lg'
+  };
+  
+  const buttonClasses = clsx(
+    baseClasses,
+    variantClasses[variant],
+    sizeClasses[size],
+    fullWidth ? 'w-full' : '',
+    isLoading ? 'opacity-70 pointer-events-none' : '',
+    disabled ? 'opacity-50 pointer-events-none cursor-not-allowed' : '',
+    className
+  );
+
   return (
     <button
       {...props}
       disabled={disabled || isLoading}
-      {...stylex.props(
-        styles.button,
-        styles[variant],
-        styles[size],
-        fullWidth && styles.fullWidth,
-        isLoading && styles.loading,
-        disabled && styles.disabled
-      )}
+      className={buttonClasses}
     >
       {isLoading && (
         <svg

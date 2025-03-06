@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import MainLayout from '../components/layout/MainLayout';
 import SleepSummary from '../components/dashboard/SleepSummary';
-import dashboardService from '../services/dashboardService';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 

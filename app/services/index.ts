@@ -1,13 +1,13 @@
 'use client';
 
 import api from './api';
-import authService from './authService';
-import dashboardService from './dashboardService';
-import stressService from './stressService';
-import sleepService from './sleepService';
-import workActivityService from './workActivityService';
-import recommendationService from './recommendationService';
-import userService from './userService';
+import authService from './auth';
+import dashboardService from './dashboard';
+import stressService from './stress';
+import sleepService from './sleep';
+import workActivityService from './workActivity';
+import recommendationService from './recommendation';
+import userService from './user';
 import { mockConfig } from './mocks/mockConfig';
 
 // Экспорт всех сервисов

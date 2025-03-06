@@ -1,17 +1,18 @@
 import axios from 'axios';
 import { mockConfig } from './mocks/mockConfig';
+import { API_ENDPOINTS } from '../constants/apiEndpoints';
 
 // Определяем, находимся ли мы в режиме разработки
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 // В режиме разработки можно использовать mock API
-const useMockApi = isDevelopment && mockConfig.useMockData;
+const useMockApi = mockConfig.useMockData && isDevelopment;
 
 // Создаем инстанс axios с базовыми настройками
 const api = axios.create({
   baseURL: useMockApi 
     ? 'https://mockapi.com/api' // Можно заменить на json-server или другую имитацию API
-    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'),
+    : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -45,8 +46,12 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
+    // Endpoint для обновления токена
+    const refreshTokenEndpoint = API_ENDPOINTS.AUTH.REFRESH;
+    
     // Если ошибка 401 и это не запрос на обновление токена
-    if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== 'token/refresh/') {
+    if (error.response?.status === 401 && !originalRequest._retry && 
+        originalRequest.url !== refreshTokenEndpoint) {
       originalRequest._retry = true;
       
       try {
@@ -59,13 +64,18 @@ api.interceptors.response.use(
           return Promise.reject(error);
         }
         
-        const response = await axios.post(`${api.defaults.baseURL}/token/refresh/`, {
-          refresh: refreshToken,
-        });
+        const response = await axios.post(
+          `${api.defaults.baseURL}${API_ENDPOINTS.AUTH.REFRESH}`, 
+          { refresh: refreshToken }
+        );
         
         // Если успешно обновили токен
         if (response.data.access) {
           localStorage.setItem('token', response.data.access);
+          // Сохраняем новый refresh token, если он есть в ответе
+          if (response.data.refresh) {
+            localStorage.setItem('refreshToken', response.data.refresh);
+          }
           // Повторяем оригинальный запрос с новым токеном
           originalRequest.headers.Authorization = `Bearer ${response.data.access}`;
           return api(originalRequest);

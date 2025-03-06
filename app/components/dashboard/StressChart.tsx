@@ -15,6 +15,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { format, parseISO } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import Card from '../ui/Card';
 
 // Регистрируем необходимые компоненты Chart.js
 ChartJS.register(
@@ -127,11 +128,11 @@ const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
   const stressStatus = getStressStatus();
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+    <Card>
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h2 className="text-lg font-semibold mb-1">Динамика уровня стресса</h2>
-          <p className="text-sm text-gray-600">За последние 7 дней</p>
+          <h2 className="text-lg font-semibold mb-1 dark:text-gray-100">Динамика уровня стресса</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300">За последние 7 дней</p>
         </div>
         
         <div className="text-right">
@@ -151,7 +152,7 @@ const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
           <Line data={chartData} options={options as any} />
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

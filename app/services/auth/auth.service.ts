@@ -1,13 +1,12 @@
 'use client';
 
-import api from './api';
-import { LoginCredentials, RegisterData, AuthResponse, SuccessResponse } from '../types';
+import api from '../api';
+import { mockConfig } from '../mocks/mockConfig';
+import { API_ENDPOINTS } from '../../constants/apiEndpoints';
+import { AuthResponse, LoginCredentials, RegisterData, SuccessResponse } from '@/app/types';
+import { RegisterResponse, UserData } from './auth.types';
 
-// Определяем, используем ли мок-сервисы для разработки
-// const useMockServices = process.env.NODE_ENV === 'development' && true;
-const useMockServices = false;
-
-// Мок данные для разработки
+// Mock user data for development
 const mockUser = {
   id: 1,
   email: 'user@example.com',
@@ -27,7 +26,7 @@ const authService = {
    * Авторизация пользователя
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    if (useMockServices) {
+    if (mockConfig.useMockData) {
       console.log('Using mock login with credentials:', credentials);
       
       // Имитация задержки сервера
@@ -52,7 +51,7 @@ const authService = {
       return response;
     }
     
-    const response = await api.post<AuthResponse>('/token/', credentials);
+    const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials);
     
     // Сохраняем токены в localStorage
     if (response.data.access) {
@@ -66,8 +65,8 @@ const authService = {
   /**
    * Регистрация нового пользователя
    */
-  async register(data: RegisterData): Promise<SuccessResponse & { user?: { id: number; email: string; username: string } }> {
-    if (useMockServices) {
+  async register(data: RegisterData): Promise<RegisterResponse> {
+    if (mockConfig.useMockData) {
       console.log('Using mock register with data:', data);
       
       // Имитация задержки сервера
@@ -90,7 +89,7 @@ const authService = {
       };
     }
     
-    const response = await api.post<SuccessResponse & { user?: { id: number; email: string; username: string } }>('/users/', data);
+    const response = await api.post<RegisterResponse>(API_ENDPOINTS.AUTH.REGISTER, data);
     return response.data;
   },
   
@@ -112,8 +111,8 @@ const authService = {
   /**
    * Получение данных текущего пользователя
    */
-  async getCurrentUser(): Promise<{ id: number; email: string; username: string }> {
-    if (useMockServices) {
+  async getCurrentUser(): Promise<UserData> {
+    if (mockConfig.useMockData) {
       console.log('Using mock getCurrentUser');
       
       // Имитация задержки сервера
@@ -127,9 +126,85 @@ const authService = {
       return mockUser;
     }
     
-    const response = await api.get<{ id: number; email: string; username: string }>('/users/me/');
+    const response = await api.get<UserData>(API_ENDPOINTS.USERS.PROFILE);
     return response.data;
   },
+  
+  /**
+   * Сброс пароля
+   */
+  async requestPasswordReset(email: string): Promise<SuccessResponse> {
+    if (mockConfig.useMockData) {
+      console.log('Using mock password reset for:', email);
+      
+      // Имитация задержки сервера
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      return { 
+        success: true,
+        message: 'На ваш email отправлена инструкция по сбросу пароля.'
+      };
+    }
+    
+    const response = await api.post<SuccessResponse>(
+      '/auth/password/reset/', 
+      { email }
+    );
+    return response.data;
+  },
+  
+  /**
+   * Подтверждение сброса пароля
+   */
+  async confirmPasswordReset(
+    uid: string, 
+    token: string, 
+    new_password: string, 
+    new_password2: string
+  ): Promise<SuccessResponse> {
+    if (mockConfig.useMockData) {
+      console.log('Using mock password reset confirmation');
+      
+      // Имитация задержки сервера
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Мок-валидация
+      if (new_password !== new_password2) {
+        throw new Error('Пароли не совпадают');
+      }
+      
+      return { 
+        success: true,
+        message: 'Пароль успешно изменен. Теперь вы можете войти в систему.'
+      };
+    }
+    
+    const response = await api.post<SuccessResponse>(
+      '/auth/password/reset/confirm/',
+      { uid, token, new_password, new_password2 }
+    );
+    return response.data;
+  },
+  
+  /**
+   * Обновление токена
+   */
+  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+    const response = await api.post<AuthResponse>(
+      API_ENDPOINTS.AUTH.REFRESH, 
+      { refresh: refreshToken }
+    );
+    
+    if (response.data.access) {
+      localStorage.setItem('token', response.data.access);
+      // Сохраняем новый refresh token, если он есть в ответе
+      if (response.data.refresh) {
+        localStorage.setItem('refreshToken', response.data.refresh);
+      }
+    }
+    
+    return response.data;
+  }
 };
 
 export default authService; 

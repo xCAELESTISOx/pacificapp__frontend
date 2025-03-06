@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { QueryClientProvider } from './providers/QueryClientProvider';
+import { ThemeProvider } from './providers/ThemeProvider';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
@@ -17,10 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={inter.className}>
-        <QueryClientProvider>
-          {children}
-        </QueryClientProvider>
+      <body className={inter.className} suppressHydrationWarning>
+        <ThemeProvider>
+          <QueryClientProvider>
+            {children}
+          </QueryClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

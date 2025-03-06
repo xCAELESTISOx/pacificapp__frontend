@@ -2,6 +2,8 @@
  * Типы связанные с дашбордом
  */
 
+import { TimePeriod, Trend } from "./Common";
+
 /**
  * Сводка данных для дашборда
  */
@@ -10,18 +12,18 @@ export interface DashboardSummary {
     average_duration: number;
     average_quality?: number;
     total_records: number;
-    trend: 'up' | 'down' | 'stable';
+    trend: Trend;
   };
   stress: {
     average_level: number;
     total_records: number;
-    trend: 'up' | 'down' | 'stable';
+    trend: Trend;
   };
   work: {
     average_duration: number;
     average_productivity?: number;
     total_records: number;
-    trend: 'up' | 'down' | 'stable';
+    trend: Trend;
   };
   recommendations: {
     pending: number;
@@ -33,6 +35,11 @@ export interface DashboardSummary {
       category: string;
       status: string;
     }>;
+  };
+  burnout_risk?: {
+    current: number;
+    previous?: number;
+    trend: Trend;
   };
 }
 
@@ -54,7 +61,7 @@ export interface ChartData {
  * Параметры запроса данных для дашборда
  */
 export interface DashboardParams {
-  period?: 'day' | 'week' | 'month' | 'year';
+  period?: TimePeriod;
   start_date?: string;
   end_date?: string;
 } 

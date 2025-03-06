@@ -1,14 +1,15 @@
 'use client';
 
-import api from './api';
-import { sleepMockService } from './mocks';
-import { mockConfig } from './mocks/mockConfig';
+import api from '../api';
+import { sleepMockService } from '../mocks';
+import { mockConfig } from '../mocks/mockConfig';
 import { 
   SleepRecord, 
   SleepStatistics, 
   SleepStatisticsParams,
   PaginatedResponse 
-} from '../types';
+} from '@/app/types';
+import { GetSleepRecordsParams } from './sleep.types';
 
 /**
  * Сервис для работы с записями о сне
@@ -17,7 +18,7 @@ const sleepService = {
   /**
    * Получение записей о сне
    */
-  async getSleepRecords(params?: { page?: number; page_size?: number }): Promise<PaginatedResponse<SleepRecord>> {
+  async getSleepRecords(params?: GetSleepRecordsParams): Promise<PaginatedResponse<SleepRecord>> {
     if (mockConfig.useMockData) {
       return sleepMockService.getSleepRecords(params);
     }
