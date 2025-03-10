@@ -16,15 +16,16 @@ export interface StressLevel {
  * Статистика стресса за период
  */
 export interface StressStatistics {
-  average_level: number;
+  avg_level: number;
   max_level: number;
   min_level: number;
   total_records: number;
   start_date: string;
   end_date: string;
-  daily_data: Array<{
-    date: string;
-    level: number;
+  statistics: Array<{
+    date: string; // Date
+    avg_level: number;
+    count: number;
   }>;
 }
 

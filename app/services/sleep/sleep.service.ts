@@ -23,7 +23,7 @@ const sleepService = {
       return sleepMockService.getSleepRecords(params);
     }
     
-    const response = await api.get<PaginatedResponse<SleepRecord>>('/sleep-records/', { params });
+    const response = await api.get<PaginatedResponse<SleepRecord>>('/sleep/', { params });
     return response.data;
   },
   
@@ -35,7 +35,7 @@ const sleepService = {
       return sleepMockService.getSleepRecord(id);
     }
     
-    const response = await api.get<SleepRecord>(`/sleep-records/${id}/`);
+    const response = await api.get<SleepRecord>(`/sleep/${id}/`);
     return response.data;
   },
   
@@ -47,7 +47,7 @@ const sleepService = {
       return sleepMockService.addSleepRecord(data);
     }
     
-    const response = await api.post<SleepRecord>('/sleep-records/', data);
+    const response = await api.post<SleepRecord>('/sleep/', data);
     return response.data;
   },
   
@@ -59,7 +59,7 @@ const sleepService = {
       return sleepMockService.updateSleepRecord(id, data);
     }
     
-    const response = await api.patch<SleepRecord>(`/sleep-records/${id}/`, data);
+    const response = await api.patch<SleepRecord>(`/sleep/${id}/`, data);
     return response.data;
   },
   
@@ -71,7 +71,7 @@ const sleepService = {
       return sleepMockService.deleteSleepRecord(id);
     }
     
-    await api.delete(`/sleep-records/${id}/`);
+    await api.delete(`/sleep/${id}/`);
   },
   
   /**
@@ -82,7 +82,7 @@ const sleepService = {
       return sleepMockService.getSleepStatistics(params);
     }
     
-    const response = await api.get<SleepStatistics>('/sleep-records/statistics/', { params });
+    const response = await api.get<SleepStatistics>('/sleep/statistics/', { params });
     return response.data;
   },
 };

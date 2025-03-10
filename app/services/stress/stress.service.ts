@@ -23,7 +23,7 @@ const stressService = {
       return stressMockService.getStressLevels(params);
     }
     
-    const response = await api.get<PaginatedResponse<StressLevel>>('/stress-levels/', { params });
+    const response = await api.get<PaginatedResponse<StressLevel>>('/stress/', { params });
     return response.data;
   },
   
@@ -35,7 +35,7 @@ const stressService = {
       return stressMockService.getStressLevel(id);
     }
     
-    const response = await api.get<StressLevel>(`/stress-levels/${id}/`);
+    const response = await api.get<StressLevel>(`/stress/${id}/`);
     return response.data;
   },
   
@@ -47,7 +47,7 @@ const stressService = {
       return stressMockService.addStressLevel(data);
     }
     
-    const response = await api.post<StressLevel>('/stress-levels/', data);
+    const response = await api.post<StressLevel>('/stress/', data);
     return response.data;
   },
   
@@ -59,7 +59,7 @@ const stressService = {
       return stressMockService.getStressStatistics(params);
     }
     
-    const response = await api.get<StressStatistics>('/stress-levels/statistics/', { params });
+    const response = await api.get<StressStatistics>('/stress/statistics/', { params });
     return response.data;
   },
 };

@@ -31,8 +31,8 @@ export const stressMockService = {
     
     return createMockResponse({
       count: stressLevels.length,
-      next: end < stressLevels.length ? `/api/stress-levels/?page=${page + 1}&page_size=${pageSize}` : null,
-      previous: page > 1 ? `/api/stress-levels/?page=${page - 1}&page_size=${pageSize}` : null,
+      next: end < stressLevels.length ? `/api/stress/?page=${page + 1}&page_size=${pageSize}` : null,
+      previous: page > 1 ? `/api/stress/?page=${page - 1}&page_size=${pageSize}` : null,
       results,
     });
   },

@@ -19,7 +19,6 @@ const SleepSummary: React.FC<SleepSummaryProps> = ({ data = [] }) => {
   if (data.length === 0) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold mb-4">Сводка по сну</h2>
         <div className="text-center py-8 text-gray-500">
           Недостаточно данных о сне
         </div>
@@ -63,8 +62,6 @@ const SleepSummary: React.FC<SleepSummaryProps> = ({ data = [] }) => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-      <h2 className="text-lg font-semibold mb-4">Сводка по сну</h2>
-      
       <div className="space-y-6">
         {/* Последняя запись о сне */}
         <div>

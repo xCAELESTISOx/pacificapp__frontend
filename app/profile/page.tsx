@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import MainLayout from '../components/layout/MainLayout';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { authService } from '@/app/services';
+import TextInput from '../components/ui/TextInput';
 
 // Интерфейс для данных профиля пользователя
 interface UserProfile {
@@ -173,162 +176,56 @@ const ProfileEditor: React.FC<{ initialProfile: UserProfile }> = ({ initialProfi
             <div className="space-y-4">
               {/* Имя */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Имя
-                </label>
-                {isEditing === 'name' ? (
-                  <div className="flex">
-                    <input
-                      type="text"
-                      value={profile.name}
-                      onChange={(e) => updateField('name', e.target.value)}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md mr-2"
-                    />
-                    <button
-                      onClick={() => setIsEditing(null)}
-                      className="px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Отмена
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      disabled={isLoading}
-                      className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400"
-                    >
-                      {isLoading ? 'Сохранение...' : 'Сохранить'}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-900">{profile.name}</span>
-                    <button
-                      onClick={() => setIsEditing('name')}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      Изменить
-                    </button>
-                  </div>
-                )}
+                <TextInput
+                  label="Имя"
+                  value={profile.name}
+                  onChange={(value) => updateField('name', value)}
+                  isEditing={isEditing === 'name'}
+                  onCancel={() => setIsEditing(null)}
+                  onSave={handleSave}
+                  isSaving={isLoading}
+                />
               </div>
               
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                {isEditing === 'email' ? (
-                  <div className="flex">
-                    <input
-                      type="email"
-                      value={profile.email}
-                      onChange={(e) => updateField('email', e.target.value)}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md mr-2"
-                    />
-                    <button
-                      onClick={() => setIsEditing(null)}
-                      className="px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Отмена
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      disabled={isLoading}
-                      className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400"
-                    >
-                      {isLoading ? 'Сохранение...' : 'Сохранить'}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-900">{profile.email}</span>
-                    <button
-                      onClick={() => setIsEditing('email')}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      Изменить
-                    </button>
-                  </div>
-                )}
+                <TextInput
+                  label="Email"
+                  type="email"
+                  value={profile.email}
+                  onChange={(value) => updateField('email', value)}
+                  isEditing={isEditing === 'email'}
+                  onCancel={() => setIsEditing(null)}
+                  onSave={handleSave}
+                  isSaving={isLoading}
+                />
               </div>
               
               {/* Телефон */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Телефон
-                </label>
-                {isEditing === 'phone' ? (
-                  <div className="flex">
-                    <input
-                      type="tel"
-                      value={profile.phone || ''}
-                      onChange={(e) => updateField('phone', e.target.value)}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md mr-2"
-                    />
-                    <button
-                      onClick={() => setIsEditing(null)}
-                      className="px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Отмена
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      disabled={isLoading}
-                      className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400"
-                    >
-                      {isLoading ? 'Сохранение...' : 'Сохранить'}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-900">{profile.phone || 'Не указан'}</span>
-                    <button
-                      onClick={() => setIsEditing('phone')}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      {profile.phone ? 'Изменить' : 'Добавить'}
-                    </button>
-                  </div>
-                )}
+                <TextInput
+                  label="Телефон"
+                  type="tel"
+                  value={profile.phone || ''}
+                  onChange={(value) => updateField('phone', value)}
+                  isEditing={isEditing === 'phone'}
+                  onCancel={() => setIsEditing(null)}
+                  onSave={handleSave}
+                  isSaving={isLoading}
+                />
               </div>
               
               {/* Адрес */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Адрес
-                </label>
-                {isEditing === 'address' ? (
-                  <div className="flex">
-                    <input
-                      type="text"
-                      value={profile.address || ''}
-                      onChange={(e) => updateField('address', e.target.value)}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md mr-2"
-                    />
-                    <button
-                      onClick={() => setIsEditing(null)}
-                      className="px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Отмена
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      disabled={isLoading}
-                      className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400"
-                    >
-                      {isLoading ? 'Сохранение...' : 'Сохранить'}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-900">{profile.address || 'Не указан'}</span>
-                    <button
-                      onClick={() => setIsEditing('address')}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      {profile.address ? 'Изменить' : 'Добавить'}
-                    </button>
-                  </div>
-                )}
+                <TextInput
+                  label="Адрес"
+                  value={profile.address || ''}
+                  onChange={(value) => updateField('address', value)}
+                  isEditing={isEditing === 'address'}
+                  onCancel={() => setIsEditing(null)}
+                  onSave={handleSave}
+                  isSaving={isLoading}
+                />
               </div>
             </div>
           </div>
@@ -490,6 +387,52 @@ const AccountActivity: React.FC = () => {
   );
 };
 
+// Компонент для выхода из аккаунта
+const LogoutSection: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    setIsLoading(true);
+    try {
+      // Вызываем метод выхода из сервиса аутентификации
+      authService.logout();
+      
+      // Редирект на страницу входа
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Ошибка при выходе из аккаунта:', error);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
+      <h2 className="text-xl font-semibold mb-4">Безопасность аккаунта</h2>
+      <div className="border-t dark:border-gray-700 pt-4">
+        <button
+          onClick={handleLogout}
+          disabled={isLoading}
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md shadow-sm transition-colors duration-300 flex items-center justify-center"
+        >
+          {isLoading ? (
+            <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm9 4a1 1 0 11-2 0 1 1 0 012 0zm-.25 3.25a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0v-2.5z" clipRule="evenodd" />
+              <path d="M7.5 14.25V16.5h9a1.5 1.5 0 001.5-1.5v-9a1.5 1.5 0 00-1.5-1.5h-9v2.25" />
+            </svg>
+          )}
+          {isLoading ? 'Выход...' : 'Выйти из аккаунта'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default function ProfilePage() {
   // В реальном приложении здесь был бы запрос к API для получения данных пользователя
   const { data: profile, isLoading } = useQuery({
@@ -525,6 +468,8 @@ export default function ProfilePage() {
           <ProfileEditor initialProfile={profile!} />
           
           <AccountActivity />
+          
+          <LogoutSection />
         </div>
       </div>
     </MainLayout>

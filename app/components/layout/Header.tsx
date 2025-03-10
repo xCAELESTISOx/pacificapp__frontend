@@ -9,7 +9,21 @@ import { useTheme } from "@/app/providers/ThemeProvider";
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
+  
+  // Safely access theme with fallback defaults
+  let theme = "light";
+  let toggleTheme = () => {};
+  
+  try {
+    const themeContext = useTheme();
+    if (themeContext) {
+      theme = themeContext.theme;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      toggleTheme = themeContext.toggleTheme;
+    }
+  } catch (error) {
+    console.error("Theme context not available yet", error);
+  }
 
   // Prevent scrolling when mobile menu is open
   useEffect(() => {

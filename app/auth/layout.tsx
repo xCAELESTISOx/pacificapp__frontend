@@ -26,7 +26,7 @@ export default function AuthLayout({
         <div className="container mx-auto px-4">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl font-bold text-primary-600">
-              Prevent<span className="text-secondary-600">Burnout</span>
+              Pacific<span className="text-secondary-600">App</span>
             </span>
           </Link>
         </div>

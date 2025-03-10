@@ -162,7 +162,7 @@ const dashboardService = {
       };
     }
     
-    const response = await api.get<ChartData>('/stress-levels/chart/', { params });
+    const response = await api.get<ChartData>('/stress/chart/', { params });
     return response.data;
   },
   
@@ -209,7 +209,7 @@ const dashboardService = {
       };
     }
     
-    const response = await api.get<ChartData>('/sleep-records/chart/', { params });
+    const response = await api.get<ChartData>('/sleep/chart/', { params });
     return response.data;
   },
   

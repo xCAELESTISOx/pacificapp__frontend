@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,6 +16,7 @@ import { Line } from 'react-chartjs-2';
 import { format, parseISO } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Card from '../ui/Card';
+import { StressStatistics } from '@/app/types';
 
 // Регистрируем необходимые компоненты Chart.js
 ChartJS.register(
@@ -35,10 +36,15 @@ interface StressDataPoint {
 }
 
 interface StressChartProps {
-  data: StressDataPoint[];
+  statistics: StressStatistics;
 }
 
-const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
+const StressChart: React.FC<StressChartProps> = ({ statistics }) => {
+  const data = useMemo(() => statistics.statistics.map((item) => ({
+    date: item.date,
+    level: item.avg_level
+  })), [statistics]);
+  
   // Сортируем данные по дате
   const sortedData = [...data].sort((a, b) => 
     new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -70,6 +76,7 @@ const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
   // Настройки графика
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
@@ -113,15 +120,11 @@ const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
     },
   };
 
-  // Вычисляем средний уровень стресса
-  const averageStress = data.length
-    ? Math.round(data.reduce((acc, curr) => acc + curr.level, 0) / data.length)
-    : 0;
 
   // Определяем статус на основе среднего уровня стресса
   const getStressStatus = () => {
-    if (averageStress < 30) return { text: 'Низкий', color: 'text-green-600' };
-    if (averageStress < 60) return { text: 'Средний', color: 'text-yellow-600' };
+    if (statistics.avg_level < 30) return { text: 'Низкий', color: 'text-green-600' };
+    if (statistics.avg_level < 60) return { text: 'Средний', color: 'text-yellow-600' };
     return { text: 'Высокий', color: 'text-red-600' };
   };
 
@@ -138,7 +141,7 @@ const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
         <div className="text-right">
           <div className="text-sm text-gray-600">Средний уровень стресса</div>
           <div className={`text-xl font-bold ${stressStatus.color}`}>
-            {averageStress}% - {stressStatus.text}
+            {statistics.avg_level}% - {stressStatus.text}
           </div>
         </div>
       </div>
@@ -148,7 +151,7 @@ const StressChart: React.FC<StressChartProps> = ({ data = [] }) => {
           Недостаточно данных для отображения графика
         </div>
       ) : (
-        <div className="h-64">
+        <div className="w-full h-64">
           <Line data={chartData} options={options as any} />
         </div>
       )}

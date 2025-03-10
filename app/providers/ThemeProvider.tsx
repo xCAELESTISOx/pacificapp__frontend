@@ -12,6 +12,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Add a higher-order component to safely provide theme context
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
@@ -21,55 +22,77 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMounted(true);
     
     // Проверяем сохраненную тему в localStorage
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      // Проверяем системные предпочтения
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setTheme(prefersDark ? "dark" : "light");
-    }
-
-    // Отслеживаем изменения в системной теме
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem("theme")) {
-        setTheme(e.matches ? "dark" : "light");
+    try {
+      const savedTheme = localStorage.getItem("theme") as Theme | null;
+      
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else {
+        // Проверяем системные предпочтения
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        setTheme(prefersDark ? "dark" : "light");
       }
-    };
-    
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+
+      // Отслеживаем изменения в системной теме
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const handleChange = (e: MediaQueryListEvent) => {
+        if (!localStorage.getItem("theme")) {
+          setTheme(e.matches ? "dark" : "light");
+        }
+      };
+      
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+      // Fallback to light theme
+      setTheme("light");
+    }
   }, []);
 
   // Обновляем data-theme атрибут и localStorage при изменении темы
   useEffect(() => {
     if (!mounted) return;
     
-    const root = document.documentElement;
-    
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
+    try {
+      const root = document.documentElement;
+      
+      if (theme === "dark") {
+        root.classList.add("dark");
+      } else {
+        root.classList.remove("dark");
+      }
+      
+      root.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+    } catch (error) {
+      console.error("Error updating theme:", error);
     }
-    
-    root.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
   }, [theme, mounted]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
-  // Защита от проблем с гидратацией (hydration mismatch)
+  // Create a safe context value
+  const contextValue = {
+    theme,
+    toggleTheme,
+    setTheme
+  };
+
+  // Render children directly during server-side rendering
+  // or when not mounted yet to avoid hydration mismatch
   if (!mounted) {
-    return <>{children}</>;
+    return (
+      <ThemeContext.Provider value={contextValue}>
+        {children}
+      </ThemeContext.Provider>
+    );
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

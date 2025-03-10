@@ -19,8 +19,8 @@ export const API_ENDPOINTS = {
     PROFILE: '/users/me/',
   },
   STRESS: {
-    LIST: '/stress-levels/',
-    STATISTICS: '/stress-levels/statistics/',
+    LIST: '/stress/',
+    STATISTICS: '/stress/statistics/',
   },
   SLEEP: {
     LIST: '/sleep-data/',

@@ -166,8 +166,6 @@ export default function DashboardPage() {
       ]
     : [];
 
-  console.log(data);
-
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-8">
@@ -231,7 +229,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="lg:col-span-2">
-              <StressChart data={stressLevels} />
+              <StressChart statistics={data?.stress} />
             </div>
 
             <div>

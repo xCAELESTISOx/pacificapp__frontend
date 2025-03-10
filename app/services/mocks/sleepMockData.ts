@@ -31,8 +31,8 @@ export const sleepMockService = {
     
     return createMockResponse({
       count: sleepRecords.length,
-      next: end < sleepRecords.length ? `/api/sleep-records/?page=${page + 1}&page_size=${pageSize}` : null,
-      previous: page > 1 ? `/api/sleep-records/?page=${page - 1}&page_size=${pageSize}` : null,
+      next: end < sleepRecords.length ? `/api/sleep/?page=${page + 1}&page_size=${pageSize}` : null,
+      previous: page > 1 ? `/api/sleep/?page=${page - 1}&page_size=${pageSize}` : null,
       results,
     });
   },

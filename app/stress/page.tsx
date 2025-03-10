@@ -221,14 +221,8 @@ export default function StressPage() {
             </div>
           ) : (
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <StressChart 
-                data={(data?.daily_data || []).map((item) => ({
-                  date: item.date,
-                  level: item.level
-                }))} 
-              />
+              <StressChart statistics={data} />
               <div className="mt-4 text-center">
-                <p className="text-gray-600">Средний уровень стресса: <span className="font-bold">{data && Math.round(data.average_level)}</span></p>
                 <p className="text-gray-600">Всего записей: {data?.total_records}</p>
               </div>
             </div>

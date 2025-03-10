@@ -18,16 +18,14 @@ export interface SleepRecord {
  * Статистика сна за период
  */
 export interface SleepStatistics {
-  average_duration: number;
-  average_quality?: number;
-  total_records: number;
-  start_date: string;
-  end_date: string;
-  daily_data: Array<{
+  avg_duration: number;
+  avg_quality: number;
+  statistics: Array<{
     date: string;
-    duration_hours: number;
-    quality?: number;
+    duration_hours: string;
+    quality: string;
   }>;
+  total_records: number;
 }
 
 /**
